@@ -136,13 +136,11 @@ const getMovies = () => {
 
 const getHeroes = () => {
   const getHeroesOfMovie = (movie) => {
-    console.log(movie);
     heroList.textContent = '';
     heroSet.forEach(hero => {
       if (movie.toLowerCase() === 'all movies') {
         heroList.appendChild(hero.getCard());
       } else if (hero.movies) {
-        console.log(hero.movies);
         let isMovie = false;
         hero.movies.forEach(item => {
           if (item.toLowerCase() === movie.toLowerCase()) {
