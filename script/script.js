@@ -127,7 +127,7 @@ const getHeroes = () => {
   const getHeroes = (movie) => {
     heroList.textContent = '';
     heroSet.forEach(hero => {
-      if (movie === 'all movies') {
+      if (movie.toLowerCase() === 'all movies') {
         heroList.appendChild(hero.getCard());
       } else {
         if (hero.movies) {
