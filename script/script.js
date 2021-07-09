@@ -40,6 +40,15 @@ class Hero{
   createCard() {
     this.card = document.createElement('div');
     this.card.className = 'hero';
+    const getMovies = () => {
+      let text = [];
+      if (this.movies) {
+        this.movies.forEach(item => {
+          text.push(`<span class="hero-movie">${item}</span>`);
+        });
+      }
+      return text;
+    };
     this.card.insertAdjacentHTML('afterbegin', `
       <img src="${this.photo}" alt="${this.name}" class="hero__image">
       <h2 class="name"><strong>name: </strong>${this.name}</h2>
@@ -50,7 +59,7 @@ class Hero{
         ${this.deathDay ? '<p class="deathDay"><strong>deathDay: </strong>' + this.deathDay + '</p>' : ''}
         ${this.status ? '<p class="status"><strong>status: </strong>' + this.status + '</p>' : ''}
         ${this.actors ? '<p class="actors"><strong>actors: </strong>' + this.actors + '</p>' : ''}
-        ${this.movies ? '<p class="movies"><strong>movies: </strong>' + this.movies.join(', ') + '</p>' : ''}
+        ${this.movies ? '<p class="movies"><strong>movies: </strong>' + getMovies().join(', ') + '</p>' : ''}
         ${this.realName ? '<p class="realName"><strong>real Name: </strong>' + this.realName + '</p>' : ''}
         ${this.citizenship ? '<p class="citizenship"><strong>citizenship: </strong>' + this.citizenship + '</p>' : ''}
       </div>
@@ -126,40 +135,49 @@ const getMovies = () => {
 };
 
 const getHeroes = () => {
-  const getHeroes = (movie) => {
+  const getHeroesOfMovie = (movie) => {
+    console.log(movie);
     heroList.textContent = '';
     heroSet.forEach(hero => {
       if (movie.toLowerCase() === 'all movies') {
         heroList.appendChild(hero.getCard());
-      } else {
-        if (hero.movies) {
-          let isMovie = false;
-          hero.movies.forEach(item => {
-            if (item.toLowerCase() === movie) {
-              isMovie = true;
-              return;
-            }
-            if (isMovie) heroList.appendChild(hero.getCard());
-          });
-        }
+      } else if (hero.movies) {
+        console.log(hero.movies);
+        let isMovie = false;
+        hero.movies.forEach(item => {
+          if (item.toLowerCase() === movie.toLowerCase()) {
+            isMovie = true;
+          }
+          if (isMovie) heroList.appendChild(hero.getCard());
+        });
       }
     });
   };
 
-  getHeroes('all movies');
-
+  const getHeroes = (movie) => {
+    heroList.scrollTo({top: 0, behavior: 'smooth'});
+    moviesLi.forEach(elem => {
+      elem.classList.remove('nav-movies_active');
+      if (elem.textContent.toLowerCase() === movie.toLowerCase()) elem.classList.add('nav-movies_active');
+    });
+    menu.classList.remove('nav_active');
+    menuButton.classList.remove('menu-button_active');
+    getHeroesOfMovie(movie);
+  };
+  
+  getHeroesOfMovie('all movies');
+  
   document.addEventListener('click', event => {
     if (event.target.closest('.nav-movies')) {
-      const target = event.target.closest('.nav-movies');
-      window.scrollTo({top: 0, behavior: 'smooth'});
-      moviesLi.forEach(elem => {
-        elem.classList.remove('nav-movies_active');
-      });
-      target.classList.add('nav-movies_active');
-      menu.classList.remove('nav_active');
-      menuButton.classList.remove('menu-button_active');
-      getHeroes(target.textContent.toLowerCase());
-    } else if (event.target.closest('.menu-button')){
+
+      getHeroes(event.target.closest('.nav-movies').textContent);
+
+    } else if (event.target.closest('.hero-movie')) {
+
+      getHeroes(event.target.closest('.hero-movie').textContent);
+
+    } else if (event.target.closest('.menu-button')) {
+
       menu.classList.toggle('nav_active');
       menuButton.classList.toggle('menu-button_active');
 
