@@ -1,6 +1,8 @@
 'use strict';
 
-const moviesList = document.querySelector('.movies-list');
+const menuButton = document.querySelector('.menu-button');
+const menu = document.querySelector('.nav');
+const moviesList = menu.querySelector('.movies-list');
 const heroList = document.querySelector('main');
 
 const heroSet = new Set();
@@ -118,7 +120,7 @@ const getMovies = () => {
   movieSet.forEach(movie => {
     moviesList.insertAdjacentHTML('beforeend', `
       <li class="nav-movies">${movie}</li>
-    `)
+    `);
   });
   moviesLi = moviesList.querySelectorAll('li');
 };
@@ -146,15 +148,21 @@ const getHeroes = () => {
 
   getHeroes('all movies');
 
-  moviesList.addEventListener('click', event => {
-    const target = event.target.closest('li');
-    if (target) {
+  document.addEventListener('click', event => {
+    if (event.target.closest('.nav-movies')) {
+      const target = event.target.closest('.nav-movies');
       window.scrollTo({top: 0, behavior: 'smooth'});
       moviesLi.forEach(elem => {
         elem.classList.remove('nav-movies_active');
       });
       target.classList.add('nav-movies_active');
+      menu.classList.remove('nav_active');
+      menuButton.classList.remove('menu-button_active');
       getHeroes(target.textContent.toLowerCase());
+    } else if (event.target.closest('.menu-button')){
+      menu.classList.toggle('nav_active');
+      menuButton.classList.toggle('menu-button_active');
+
     }
   });
 };
