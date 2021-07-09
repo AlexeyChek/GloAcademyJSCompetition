@@ -1,0 +1,162 @@
+@font-face {
+  font-family: 'Marvel';
+  src: local('Marvel'), local('Marvel-Regular'),
+    url('../fonts/Marvel-Regular.woff2') format('woff2'),
+    url('../fonts/Marvel-Regular.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Marvel';
+  src: local('Marvel Bold'), local('Marvel-Bold'),
+    url('../fonts/Marvel-Bold.woff2') format('woff2'),
+    url('../fonts/Marvel-Bold.woff') format('woff');
+  font-weight: bold;
+  font-style: normal;
+}
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+body {
+  background: center / cover no-repeat fixed url('../bg2.jpeg');
+  /* background-attachment: fixed;
+  background-position: center; */
+  font-family: 'Marvel';
+  color: #fff;
+}
+
+section {
+  display: flex;
+  width: 100%;
+  max-width: 1280px;
+  padding: 10px 40px;
+  margin: auto;
+}
+
+.logo {
+  position: sticky;
+  top: 0;
+  display: block;
+  width: 100%;
+  max-width: 1280px;
+  padding: 0 40px;
+  margin: 20px auto;
+  z-index: 1000;
+}
+
+.nav {
+  position: sticky;
+  top: 300px;
+  height: 40vh;
+  overflow: auto;
+  padding: 20px;
+  background: rgba(80, 74, 74, 0.808);
+  border-radius: 10px;
+  color: #fff;
+  width: max-content;
+  flex-shrink: 0;
+  margin-right: 20px;
+}
+
+.nav::-webkit-scrollbar {
+  width: 0;
+}
+
+.movies-list {
+  list-style: none;
+  padding: 0;
+}
+
+.nav-movies {
+  text-transform: uppercase;
+  font-size: 18px;
+  cursor: pointer;
+  margin-bottom: 10px;
+  transition: 0.3s;
+  font-weight: bold;
+}
+
+.nav-movies_active {
+  color: #f78f3f;
+}
+
+.nav-movies:hover {
+  color: #e23636;
+}
+
+.nav-movies:last-child {
+  margin-bottom: 0;
+}
+
+main {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  grid-gap: 20px;
+  width: 100%;
+}
+
+main:nth-child(2n -1)) {
+  margin-right: 20px;
+  margin-bottom: 20px;
+}
+
+.hero {
+  position: relative;
+  flex-basis: 48%;
+  border: 4px solid #000;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.hero__image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border: 2px solid #fff;
+  border-radius: 6px;
+}
+
+.hero__text {
+  padding: 10px;
+  position: absolute;
+  left: 10px;
+  right: 10px;
+  bottom: 10px;
+  border-radius: 6px;
+  text-transform: uppercase;
+  font-weight: normal;
+  background-color: #504a4aaa;
+}
+
+.hero__text p {
+  font-size: 14px;
+  margin-top: 0;
+  margin-bottom: 5px;
+}
+
+.hero__text p:last-child {
+  margin-bottom: 0;
+}
+
+
+.hero .name {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  right: 20px;
+  font-size: 18px;
+  text-align: center;
+  text-shadow: 2px 2px 1px #e23636,
+    0 0 2px #518cca,
+    0px -1px 2px #f78f3f;
+}
+
+.hero__text strong {
+  text-transform: lowercase;
+  font-weight: bold;
+}
