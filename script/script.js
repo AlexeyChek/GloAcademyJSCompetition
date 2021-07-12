@@ -24,6 +24,72 @@ const genderSelect = document.getElementById('gender');
 const statusSelect = document.getElementById('status');
 const citizenshipSelect = document.getElementById('citizenship');
 
+class Slider {
+  constructor({
+    wrapper,
+    slide,
+    prev,
+    next,
+  }) {
+    this.wrapper = document.querySelector(wrapper);
+    this.slide = slide;
+    this.slides = [];
+    this.prev  = document.querySelector(prev);
+    this.next  = document.querySelector(next);
+    this.margin = 10;
+    this.step = 0;
+    this.position = 0;
+  }
+
+  init() {
+    this.prev.addEventListener('click', this.prevSlide.bind(this));
+    this.next.addEventListener('click', this.nextSlide.bind(this));
+  }
+
+  update() {
+    this.position = 0;
+    this.slides = [...this.wrapper.querySelectorAll(this.slide)];
+    if (this.slides.length > 3) {
+      this.margin = (this.wrapper.parentNode.offsetWidth - (this.slides[0].offsetWidth * 3)) / 2;
+      for (let i = 0; i < this.slides.length - 1; i++) {
+        this.slides[i].style.marginRight = this.margin + 'px';
+      }
+      this.step = this.slides[0].offsetWidth + this.margin;
+    }
+    this.wrapper.style.transform = 'translateX(0)';
+  }
+
+  prevSlide() {
+    if (this.slides.length - this.position - 3 > 0) {
+      this.position--;
+      this.wrapper.style.transform = `translateX(${-(this.position * this.step)}px)`;
+    }
+  }
+
+  nextSlide() {
+    if (this.slides.length - this.position > 3) {
+      this.position++;
+      this.wrapper.style.transform = `translateX(${-(this.position * this.step)}px)`;
+    }
+  }
+}
+
+Slider.create = ({
+  wrapper,
+  slide,
+  prev,
+  next,
+}) => {
+  const slider = new Slider({
+    wrapper,
+    slide,
+    prev,
+    next,
+  });
+  slider.init();
+  return slider;
+};
+
 class Hero {
   constructor({
     name,
@@ -134,7 +200,7 @@ const getSelects = () => {
   createOptions(citizenshipSet, citizenshipSelect);
 };
 
-const getHeroes = () => {
+const getHeroes = slider => {
 
   const isMovie = (hero, movieTitle) => {
     if (!movieTitle) return true;
@@ -164,6 +230,7 @@ const getHeroes = () => {
         heroList.append(hero.getCard());
       }
     });
+    slider.update();
   };
 
   getHeroes({});
@@ -179,14 +246,14 @@ const getHeroes = () => {
   });
 
   let isSound = localStorage.getItem('sound');
-  
+
   const soundPlay = () => {
     audio.play();
     isSound = true;
     soundBtnImg.src = './../volume.svg';
     localStorage.setItem('sound', 'sound');
   };
-  
+
   const soundPause = () => {
     audio.pause();
     isSound = false;
@@ -234,7 +301,13 @@ const start = () => {
         citizenshipSet.add(hero.citizenship ? hero.citizenship.toUpperCase() : 'no data');
       });
       getSelects();
-      getHeroes();
+      const slider = Slider.create({
+        wrapper: 'main',
+        slide: '.hero',
+        prev: '.prev',
+        next: '.next',
+      });
+      getHeroes(slider);
     })
     .catch(error => console.error(error));
 };
