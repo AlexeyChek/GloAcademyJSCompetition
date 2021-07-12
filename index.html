@@ -12,18 +12,51 @@
 </head>
 
 <body>
+  <audio src="./music/AlanSilvestri-TheAvengers.mp3"></audio>
+  <div class="preloader">
+  </div>
   <section>
-    <button class="menu-button">
-      <img src="button.png" alt="menu button">
-      <span>menu</span>
-    </button>
     <img src="best-logo.png" alt="MARVEL" class="logo">
-    <nav class="nav">
-      <ul class="movies-list">
-        <li class="nav-movies nav-movies_active">All movies</li>
-      </ul>
-    </nav>
+    <div class="nav">
+      <button class="sound">
+        <img src="mute.svg" alt="audio">
+      </button>
+      <div class="select-wrapper">
+        <p>movies</p>
+        <select name="movies" id="movies">movies
+          <option value="ALL">ALL</option>
+        </select>
+      </div>
+      <div class="select-wrapper">
+        <p>species</p>
+        <select name="species" id="species">
+          <option value="ALL">ALL</option>
+        </select>
+      </div>
+      <div class="select-wrapper">
+        <p>gender</p>
+        <select name="gender" id="gender">
+          <option value="ALL">ALL</option>
+        </select>
+      </div>
+      <div class="select-wrapper">
+        <p>status</p>
+        <select name="status" id="status">
+          <option value="ALL">ALL</option>
+        </select>
+      </div>
+      <div class="select-wrapper">
+        <p>citizenship</p>
+        <select name="citizenship" id="citizenship">
+          <option value="ALL">ALL</option>
+        </select>
+      </div>
+      <button class="reset" title="reset">
+        <img src="reset.svg" alt="reset">
+      </button>
+    </div>
     <main>
+
     </main>
   </section>
 </body>

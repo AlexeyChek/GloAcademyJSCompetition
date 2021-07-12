@@ -1,16 +1,31 @@
 'use strict';
 
-const menuButton = document.querySelector('.menu-button');
-const menu = document.querySelector('.nav');
-const moviesList = menu.querySelector('.movies-list');
+const preloader = document.querySelector('.preloader');
+const logo = document.querySelector('.logo');
+logo.classList.add('logo_active');
+preloader.classList.add('preloader_active');
+
+const audio = document.querySelector('audio');
+const soundBtnImg = document.querySelector('.sound img');
+
+const nav = document.querySelector('.nav');
 const heroList = document.querySelector('main');
 
 const heroSet = new Set();
-const movieSet = new Set();
-let moviesLi = [];
+const moviesSet = new Set();
+const speciesSet = new Set();
+const genderSet = new Set();
+const statusSet = new Set();
+const citizenshipSet = new Set();
 
-class Hero{
-  constructor({	
+const moviesSelect = document.getElementById('movies');
+const speciesSelect = document.getElementById('species');
+const genderSelect = document.getElementById('gender');
+const statusSelect = document.getElementById('status');
+const citizenshipSelect = document.getElementById('citizenship');
+
+class Hero {
+  constructor({
     name,
     species,
     gender,
@@ -22,7 +37,7 @@ class Hero{
     movies,
     realName,
     citizenship
-  }){
+  }) {
     this.name = name;
     this.species = species;
     this.gender = gender;
@@ -41,7 +56,7 @@ class Hero{
     this.card = document.createElement('div');
     this.card.className = 'hero';
     const getMovies = () => {
-      let text = [];
+      const text = [];
       if (this.movies) {
         this.movies.forEach(item => {
           text.push(`<span class="hero-movie">${item}</span>`);
@@ -71,9 +86,9 @@ class Hero{
   }
 
   getMovies(movie) {
-    return this.movies.find(item => item === movie) !== -1 ? true : false;
+    return this.movies.find(item => item === movie) !== -1;
   }
-};
+}
 
 Hero.getNew = ({
   name,
@@ -88,7 +103,7 @@ Hero.getNew = ({
   realName,
   citizenship
 }) => {
-  const hero = new Hero({	
+  const hero = new Hero({
     name,
     species,
     gender,
@@ -105,82 +120,123 @@ Hero.getNew = ({
   return hero;
 };
 
-const start = () => {
-  fetch('./dbHeroes.json')
-  .then(response => {
-    if (response.status !== 200) {
-      throw new Error('Network status not 200');
-    }
-    return response.json();
-  })
-  .then(response => {
-    response.forEach(data => {
-      const hero = Hero.getNew(data);
-      heroSet.add(hero);
-      if (hero.movies) hero.movies.forEach(movie => movieSet.add(movie));
+const getSelects = () => {
+  const createOptions = (set, select) => {
+    set.forEach(item => {
+      select.insertAdjacentHTML('beforeend', `<option value="${item.toUpperCase()}">${item.toUpperCase()}</option>`);
     });
-    getMovies();
-    getHeroes();
-  })
-  .catch(error => console.error(error));
-};
+  };
 
-const getMovies = () => {
-  movieSet.forEach(movie => {
-    moviesList.insertAdjacentHTML('beforeend', `
-      <li class="nav-movies">${movie}</li>
-    `);
-  });
-  moviesLi = moviesList.querySelectorAll('li');
+  createOptions(moviesSet, moviesSelect);
+  createOptions(speciesSet, speciesSelect);
+  createOptions(genderSet, genderSelect);
+  createOptions(statusSet, statusSelect);
+  createOptions(citizenshipSet, citizenshipSelect);
 };
 
 const getHeroes = () => {
-  const getHeroesOfMovie = (movie) => {
+
+  const isMovie = (hero, movieTitle) => {
+    if (!movieTitle) return true;
+    let isMovie = false;
+    if (hero.movies) hero.movies.forEach(movie => {
+      if (movie.toUpperCase() === movieTitle) isMovie = true;
+    });
+    return isMovie;
+  };
+
+  const isQuality  = (hero, quality, value) => !value || hero[quality] && hero[quality].toUpperCase() === value || !hero[quality] && value === 'NO DATA';
+
+  const getHeroes = ({
+    movie,
+    species,
+    gender,
+    status,
+    citizenship
+  }) => {
     heroList.textContent = '';
     heroSet.forEach(hero => {
-      if (movie.toLowerCase() === 'all movies') {
-        heroList.appendChild(hero.getCard());
-      } else if (hero.movies) {
-        let isMovie = false;
-        hero.movies.forEach(item => {
-          if (item.toLowerCase() === movie.toLowerCase()) {
-            isMovie = true;
-          }
-          if (isMovie) heroList.appendChild(hero.getCard());
-        });
+      if (isQuality(hero, 'species', species) &&
+      isQuality(hero, 'gender', gender) &&
+      isQuality(hero, 'status', status) &&
+      isQuality(hero, 'citizenship', citizenship) &&
+      isMovie(hero, movie)) {
+        heroList.append(hero.getCard());
       }
     });
   };
 
-  const getHeroes = (movie) => {
-    heroList.scrollTo({top: 0, behavior: 'smooth'});
-    moviesLi.forEach(elem => {
-      elem.classList.remove('nav-movies_active');
-      if (elem.textContent.toLowerCase() === movie.toLowerCase()) elem.classList.add('nav-movies_active');
+  getHeroes({});
+
+  nav.addEventListener('change', () => {
+    getHeroes({
+      movie: moviesSelect.value !== 'ALL' ? moviesSelect.value : '',
+      species: speciesSelect.value !== 'ALL' ? speciesSelect.value : '',
+      gender: genderSelect.value !== 'ALL' ? genderSelect.value : '',
+      status: statusSelect.value !== 'ALL' ? statusSelect.value : '',
+      citizenship: citizenshipSelect.value !== 'ALL' ? citizenshipSelect.value : '',
     });
-    menu.classList.remove('nav_active');
-    menuButton.classList.remove('menu-button_active');
-    getHeroesOfMovie(movie);
+  });
+
+  let isSound = localStorage.getItem('sound');
+  
+  const soundPlay = () => {
+    audio.play();
+    isSound = true;
+    soundBtnImg.src = './../volume.svg';
+    localStorage.setItem('sound', 'sound');
   };
   
-  getHeroesOfMovie('all movies');
-  
+  const soundPause = () => {
+    audio.pause();
+    isSound = false;
+    soundBtnImg.src = './../mute.svg';
+    localStorage.setItem('sound', '');
+  };
+
   document.addEventListener('click', event => {
-    if (event.target.closest('.nav-movies')) {
-
-      getHeroes(event.target.closest('.nav-movies').textContent);
-
-    } else if (event.target.closest('.hero-movie')) {
-
-      getHeroes(event.target.closest('.hero-movie').textContent);
-
-    } else if (event.target.closest('.menu-button')) {
-
-      menu.classList.toggle('nav_active');
-      menuButton.classList.toggle('menu-button_active');
-
+    if (isSound) soundPlay();
+    const target = event.target;
+    if (target.closest('.sound')) {
+      if (!isSound) {
+        soundPlay();
+      } else {
+        soundPause();
+      }
+    }
+    if (target.closest('.reset')) {
+      moviesSelect.value = 'ALL';
+      speciesSelect.value = 'ALL';
+      genderSelect.value = 'ALL';
+      statusSelect.value = 'ALL';
+      citizenshipSelect.value = 'ALL';
+      getHeroes({});
     }
   });
+};
+
+const start = () => {
+  fetch('./dbHeroes.json')
+    .then(response => {
+      if (response.status !== 200) {
+        throw new Error('Network status not 200');
+      }
+      return response.json();
+    })
+    .then(response => {
+      response.forEach(data => {
+        const hero = Hero.getNew(data);
+        heroSet.add(hero);
+        if (hero.movies) hero.movies.forEach(movie => moviesSet.add(movie.toUpperCase()));
+        speciesSet.add(hero.species ? hero.species.toUpperCase() : 'no data');
+        genderSet.add(hero.gender ? hero.gender.toUpperCase() : 'no data');
+        statusSet.add(hero.status ? hero.status.toUpperCase() : 'no data');
+        citizenshipSet.add(hero.citizenship ? hero.citizenship.toUpperCase() : 'no data');
+      });
+      getSelects();
+      getHeroes();
+    })
+    .catch(error => console.error(error));
 };
 
 start();
