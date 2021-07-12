@@ -60,7 +60,7 @@ class Slider {
   }
 
   prevSlide() {
-    if (this.slides.length - this.position - 3 > 0) {
+    if (this.position > 0) {
       this.position--;
       this.wrapper.style.transform = `translateX(${-(this.position * this.step)}px)`;
     }
