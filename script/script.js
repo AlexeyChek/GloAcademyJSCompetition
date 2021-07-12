@@ -250,14 +250,14 @@ const getHeroes = slider => {
   const soundPlay = () => {
     audio.play();
     isSound = true;
-    soundBtnImg.src = './../volume.svg';
+    soundBtnImg.src = './volume.svg';
     localStorage.setItem('sound', 'sound');
   };
 
   const soundPause = () => {
     audio.pause();
     isSound = false;
-    soundBtnImg.src = './../mute.svg';
+    soundBtnImg.src = './mute.svg';
     localStorage.setItem('sound', '');
   };
 
